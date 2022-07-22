@@ -9,7 +9,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useState } from "react";
-import { AddTransactionResponse, CallContractResponse } from "starknet";
+import { AddTransactionResponse, CallContractResponse, defaultProvider } from "starknet";
 import { toFelt } from "starknet/utils/number";
 
 import { useContract } from "../../context/ContractProvider";
@@ -35,19 +35,21 @@ const RegisterWhitelist = () => {
   const [isLoading, setLoading] = useState(false);
 
   // Check if an address is currently whitelisted by the contract & update the state as well
-  // TODO: use the 'accessControllerContract' to call 'isAllowed' function with the accountAddress
-  // TODO: Update the local state with the response (setWhitelisted & setLoading)
   const checkWhitelisted = async (accountAddress: string) => {
     setLoading(true);
-    // TODO FILL ME
+    const ret = await accessControllerContract.isAllowed(accountAddress);
+    if (1 === ret[0].toNumber()) {
+      setWhitelisted(true);
+    }
+    setLoading(false);
   };
 
   // Fetch the current free slots available on the access controller & update the state as well
-  // TODO: use the 'accessControllerContract' to call 'freeSlotsCount' function
-  // TODO: Update the local state with the response (setFreeSlots & setLoading)
-  const getFreeSlotsCount = useCallback(() => {
+  const getFreeSlotsCount = useCallback(async () => {
     setLoading(true);
-    // TODO FILL ME
+    const ret = await accessControllerContract.freeSlotsCount();
+    setFreeSlots(ret[0].toNumber());
+    setLoading(false);
   }, [accessControllerContract]);
 
   // Fetch free slots on every block
@@ -56,12 +58,15 @@ const RegisterWhitelist = () => {
   }, [blockHash, getFreeSlotsCount]);
 
   // Register to the whitelist with the current connected address
-  // TODO: use the 'accessControllerContract' to invoke 'register' function
-  // TODO: Update the local state with the response (setLoading)
-  // TODO: Add transaction to the transaction manager (addTransaction)
   const registerToWhitelist = async () => {
     setLoading(true);
-    // TODO FILL ME
+    try {
+      const { transaction_hash: tx_hash } = await accessControllerContract.register();
+      addTransaction({transaction_hash: tx_hash, address: account?.address});
+    } catch(error) {
+      console.error(error);
+    }
+    setLoading(false);
   };
 
   // UI part, you don't need to touch it (but you can if you want to improve :D)

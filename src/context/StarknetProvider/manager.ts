@@ -71,7 +71,7 @@ const useStarknetManager = (): StarknetState => {
       // TODO FILL ME
       const starknet = await connect();
       if (!starknet) {
-        throw Error("User rejected wallet selection or silent connect found nothing")
+        throw Error("User rejected wallet selection or silent connect found nothing");
       }
       // (optional) connect the wallet
       await starknet.enable();

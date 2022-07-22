@@ -5,8 +5,10 @@ import ERC20Abi from "../../contracts/abis/ARF_ERC20.json";
 import { ACCESS_CONTROLLER_CONTRACT_ADDRESS } from "../../contracts/addresses";
 
 // TODO: use 'json' from StarknetJS to parse the ERC20 & AccessController ABI's
-const compiledERC20 = json.parse("[]")/*TODO REPLACE ME*/;
-const compiledAccessController = json.parse("[]")/*TODO REPLACE ME*/;
+const compiledERC20 = json.parse(JSON.stringify(ERC20Abi));
+const compiledAccessController = json.parse(
+  JSON.stringify(accessControllerAbi)
+);
 
 export interface ContractState {
   erc20Contract: Contract;
