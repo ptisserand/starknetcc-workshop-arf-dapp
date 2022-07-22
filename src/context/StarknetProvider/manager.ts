@@ -3,6 +3,7 @@ import { toast } from "material-react-toastify";
 import React from "react";
 // Here we import the needed Interfaces of the StarknetJS & default provider
 import { AccountInterface, defaultProvider, ProviderInterface } from "starknet";
+import { starknetKeccak } from "starknet/dist/utils/hash";
 
 import { StarknetState } from "./model";
 
@@ -54,9 +55,8 @@ function reducer(
 // Start of Starknet manager
 const useStarknetManager = (): StarknetState => {
   // Init the reducer, & set the provider to default one
-  // TODO: set the default provider as initial provider
   const [state, dispatch] = React.useReducer(reducer, {
-    provider: defaultProvider /* TODO REPLACE ME */,
+    provider: defaultProvider,
   });
 
   const { account, connected, provider } = state;
@@ -69,14 +69,22 @@ const useStarknetManager = (): StarknetState => {
   const connectBrowserWallet = React.useCallback(async () => {
     try {
       // TODO FILL ME
-      dispatch({
-        type: "set_account",
-        account: undefined /* TODO REPLACE ME */,
-      });
-      dispatch({
-        type: "set_provider",
-        provider: undefined /* TODO REPLACE ME */,
-      });
+      const starknet = await connect();
+      if (!starknet) {
+        throw Error("User rejected wallet selection or silent connect found nothing")
+      }
+      // (optional) connect the wallet
+      await starknet.enable();
+      if (starknet.isConnected) {
+        dispatch({
+          type: "set_account",
+          account: starknet.account /* TODO REPLACE ME */,
+        });
+        dispatch({
+          type: "set_provider",
+          provider: starknet.provider /* TODO REPLACE ME */,
+        });
+      }
     } catch (e) {
       toast.error("⚠️ Argent-X wallet extension missing!", {
         position: "top-left",

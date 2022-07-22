@@ -28,7 +28,6 @@ export function BlockHashProvider({
   const fetchBlockHash = React.useCallback(async () => {
     const ret = await provider.getBlock();
     setBlock({blockHash: ret.block_hash, blockNumber: ret.block_number, gasPrice: ret.gas_price});
-    console.log(ret);
   }, [provider]);
 
   React.useEffect(() => {
