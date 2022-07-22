@@ -25,10 +25,10 @@ export function BlockHashProvider({
   );
 
   // Called each time the provider change
-  // TODO: get new block from the current provider
-  // TODO: set block_hash, block_number & gas_price to the local state
-  const fetchBlockHash = React.useCallback(() => {
-    // TODO FILL ME
+  const fetchBlockHash = React.useCallback(async () => {
+    const ret = await provider.getBlock();
+    setBlock({blockHash: ret.block_hash, blockNumber: ret.block_number, gasPrice: ret.gas_price});
+    console.log(ret);
   }, [provider]);
 
   React.useEffect(() => {

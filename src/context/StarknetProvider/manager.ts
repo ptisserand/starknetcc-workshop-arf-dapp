@@ -1,7 +1,6 @@
 import { connect } from "get-starknet";
 import { toast } from "material-react-toastify";
 import React from "react";
-
 // Here we import the needed Interfaces of the StarknetJS & default provider
 import { AccountInterface, defaultProvider, ProviderInterface } from "starknet";
 
@@ -57,7 +56,7 @@ const useStarknetManager = (): StarknetState => {
   // Init the reducer, & set the provider to default one
   // TODO: set the default provider as initial provider
   const [state, dispatch] = React.useReducer(reducer, {
-    provider: ProviderInterface.prototype /* TODO REPLACE ME */,
+    provider: defaultProvider /* TODO REPLACE ME */,
   });
 
   const { account, connected, provider } = state;
